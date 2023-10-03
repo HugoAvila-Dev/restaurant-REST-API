@@ -150,8 +150,14 @@ function agregarPlatillo(producto) {
     //Limpiar el codigo HTML previo
     limpiarHTML();
 
-    //Mostrar el resumen 
-    actualizarResumen();
+    if(cliente.pedido.length) {
+        //Mostrar el resumen 
+        actualizarResumen();
+
+    } else { 
+        mensajePedidovacio();
+    }
+
 }
 
 function actualizarResumen() {
@@ -221,13 +227,13 @@ function actualizarResumen() {
         precioValor.textContent = `$${precio}`;
 
         //Subtotal del articulo
-        const subtotalEl = document.createElement('P');
-        precioEl.classList.add('fw-bold');
-        precioEl.textContent = `Subtotal: `;
+         const subtotalEl = document.createElement('P');
+         subtotalEl.classList.add('fw-bold');
+         subtotalEl.textContent = `Subtotal: `;
 
-        const subtotalValor = document.createElement('SPAN');
-        precioValor.classList.add('fw-normal');
-        precioValor.textContent = calcularSubtotal(precio, cantidad);
+         const subtotalValor = document.createElement('SPAN');
+         subtotalValor.classList.add('fw-normal');
+         subtotalValor.textContent = calcularSubtotal(precio, cantidad);
 
         //Boton para eliminar el articulo
         const btnEliminar = document.createElement('BUTTON');
@@ -278,13 +284,30 @@ function calcularSubtotal(precio, cantidad) {
 }
 
 function eliminarProducto(id) {
-    const {pedido } = cliente;
+    const { pedido } = cliente;
     const resultado = pedido.filter( articulo => articulo.id !== id)
     cliente.pedido = [...resultado]
 
     //Limpiar el codigo HTML previo
     limpiarHTML();
 
-    //Mostrar el resumen 
-    actualizarResumen();
+    if(cliente.pedido.length) {
+        //Mostrar el resumen 
+        actualizarResumen();
+
+    } else { 
+        mensajePedidovacio();
+    }
+
+    //El producto se eliminó por lo tanto regresamos la cantidad a 0 en el formulario
+    document.getElementById(`producto-${id}`).value = 0;
+}
+
+function mensajePedidovacio() {
+    const contenido = document.querySelector('#resumen .contenido');
+    const texto = document.createElement('P');
+    texto.classList.add('text-center');
+    texto.textContent = 'Añade los elementos del pedido';
+
+    contenido.appendChild(texto);
 }
