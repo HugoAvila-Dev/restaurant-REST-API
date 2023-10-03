@@ -36,7 +36,7 @@ function guardarCliente() {
             }, 3000);
         }
         return;
-    } 
+    }
 
     //Asignar datos del formulario a cliente
     cliente = {
@@ -44,7 +44,7 @@ function guardarCliente() {
         mesa,
         hora
     };
-     
+
     //Ocultar modal
     const modalFormulario = document.querySelector('#formulario');
     const modalBootstrap = bootstrap.Modal.getInstance(modalFormulario);
@@ -72,10 +72,10 @@ function obtenerPlatillos() {
         .catch(error => console.log(error))
 }
 
-function mostrarPlatillos( platillos ) {
+function mostrarPlatillos(platillos) {
     const contenido = document.querySelector('#platillos .contenido')
 
-    platillos.forEach( platillo => {
+    platillos.forEach(platillo => {
 
         const row = document.createElement('DIV');
         row.classList.add('row', 'py-3', 'border-top');
@@ -98,11 +98,11 @@ function mostrarPlatillos( platillos ) {
         inputCantidad.value = 0;
         inputCantidad.id = `producto-${platillo.id}`;
         inputCantidad.classList.add('form-control');
-        
+
         //Funcion que detecta la cantidad y el platillo que se está agregando
-        inputCantidad.onchange = function() {
+        inputCantidad.onchange = function () {
             const cantidad = parseInt(inputCantidad.value);
-            agregarPlatillo({...platillo, cantidad})
+            agregarPlatillo({ ...platillo, cantidad })
         };
 
         const agregar = document.createElement('DIV');
@@ -122,39 +122,39 @@ function mostrarPlatillos( platillos ) {
 function agregarPlatillo(producto) {
     //Extraer el pedido actual
     const { pedido } = cliente;
-    
+
     //Revisar que la cantidad sea mayor a 0
-    if(producto.cantidad > 0) {
-        
+    if (producto.cantidad > 0) {
+
         //Comprueba si el elemento ya existe en el array
-        if(pedido.some( articulo => articulo.id === producto.id )) {
+        if (pedido.some(articulo => articulo.id === producto.id)) {
             //El articulo ya existe, actualizar la cantidad
-            const pedidoActualizado = pedido.map( articulo => {
-                if(articulo.id === producto.id) {
+            const pedidoActualizado = pedido.map(articulo => {
+                if (articulo.id === producto.id) {
                     articulo.cantidad = producto.cantidad;
-                } 
+                }
                 return articulo;
             })
             //Se asigna el nuevo array a cliente.pedido
             cliente.pedido = [...pedidoActualizado]
-    
-        }else {
+
+        } else {
             //El articulo no existe, le agregamos al array de pedido
             cliente.pedido = [...pedido, producto]
         }
     } else {
         //Eliminar elementos cuando la cantidad es 0
-        const resultado = pedido.filter( articulo => articulo.id !== producto.id)
+        const resultado = pedido.filter(articulo => articulo.id !== producto.id)
         cliente.pedido = [...resultado]
     }
     //Limpiar el codigo HTML previo
     limpiarHTML();
 
-    if(cliente.pedido.length) {
+    if (cliente.pedido.length) {
         //Mostrar el resumen 
         actualizarResumen();
 
-    } else { 
+    } else {
         mensajePedidovacio();
     }
 
@@ -183,7 +183,7 @@ function actualizarResumen() {
     const horaSpan = document.createElement('SPAN');
     horaSpan.textContent = cliente.hora;
     horaSpan.classList.add('fw-normal');
-    
+
     //Agregar a los elementos padre
     mesa.appendChild(mesaSpan);
     hora.appendChild(horaSpan);
@@ -198,8 +198,8 @@ function actualizarResumen() {
     grupo.classList.add('list-group');
 
     const { pedido } = cliente;
-    pedido.forEach( articulo => {
-        const { nombre, cantidad, precio, id} = articulo;
+    pedido.forEach(articulo => {
+        const { nombre, cantidad, precio, id } = articulo;
 
         const lista = document.createElement('LI');
         lista.classList.add('list-group-item');
@@ -227,21 +227,21 @@ function actualizarResumen() {
         precioValor.textContent = `$${precio}`;
 
         //Subtotal del articulo
-         const subtotalEl = document.createElement('P');
-         subtotalEl.classList.add('fw-bold');
-         subtotalEl.textContent = `Subtotal: `;
+        const subtotalEl = document.createElement('P');
+        subtotalEl.classList.add('fw-bold');
+        subtotalEl.textContent = `Subtotal: `;
 
-         const subtotalValor = document.createElement('SPAN');
-         subtotalValor.classList.add('fw-normal');
-         subtotalValor.textContent = calcularSubtotal(precio, cantidad);
+        const subtotalValor = document.createElement('SPAN');
+        subtotalValor.classList.add('fw-normal');
+        subtotalValor.textContent = calcularSubtotal(precio, cantidad);
 
         //Boton para eliminar el articulo
         const btnEliminar = document.createElement('BUTTON');
         btnEliminar.textContent = 'Eliminar del Pedido';
         btnEliminar.classList.add('btn', 'btn-danger');
-        
+
         //Funcion para eliminar del pedido
-        btnEliminar.onclick = function() {
+        btnEliminar.onclick = function () {
             eliminarProducto(id);
         }
 
@@ -277,7 +277,7 @@ function actualizarResumen() {
 function limpiarHTML() {
     const contenido = document.querySelector('#resumen .contenido');
 
-    while(contenido.firstChild) {
+    while (contenido.firstChild) {
         contenido.removeChild(contenido.firstChild);
     }
 }
@@ -288,17 +288,17 @@ function calcularSubtotal(precio, cantidad) {
 
 function eliminarProducto(id) {
     const { pedido } = cliente;
-    const resultado = pedido.filter( articulo => articulo.id !== id)
+    const resultado = pedido.filter(articulo => articulo.id !== id)
     cliente.pedido = [...resultado]
 
     //Limpiar el codigo HTML previo
     limpiarHTML();
 
-    if(cliente.pedido.length) {
+    if (cliente.pedido.length) {
         //Mostrar el resumen 
         actualizarResumen();
 
-    } else { 
+    } else {
         mensajePedidovacio();
     }
 
@@ -328,7 +328,64 @@ function formularioPropinas() {
     heading.classList.add('my-4', 'text-center');
     heading.textContent = 'Propina';
 
+    //Radio Button 10%
+    const radio10 = document.createElement('INPUT');
+    radio10.type = 'radio';
+    radio10.name = 'propina';
+    radio10.value = '10';
+    radio10.classList.add('form-check-input');
+
+    const radio10Label = document.createElement('LABEL');
+    radio10Label.textContent = '10%';
+    radio10Label.classList.add('form-check-label');
+
+    const radio10Div = document.createElement('DIV');
+    radio10Div.classList.add('form-check');
+
+    radio10Div.appendChild(radio10);
+    radio10Div.appendChild(radio10Label);
+
+    //Radio Button 25%
+    const radio25 = document.createElement('INPUT');
+    radio25.type = 'radio';
+    radio25.name = 'propina';
+    radio25.value = '25';
+    radio25.classList.add('form-check-input');
+
+    const radio25Label = document.createElement('LABEL');
+    radio25Label.textContent = '25%';
+    radio25Label.classList.add('form-check-label');
+
+    const radio25Div = document.createElement('DIV');
+    radio25Div.classList.add('form-check');
+
+    radio25Div.appendChild(radio25);
+    radio25Div.appendChild(radio25Label);
+
+    //Radio Button 50%
+    const radio50 = document.createElement('INPUT');
+    radio50.type = 'radio';
+    radio50.name = 'propina';
+    radio50.value = '50';
+    radio50.classList.add('form-check-input');
+
+    const radio50Label = document.createElement('LABEL');
+    radio50Label.textContent = '50%';
+    radio50Label.classList.add('form-check-label');
+
+    const radio50Div = document.createElement('DIV');
+    radio50Div.classList.add('form-check');
+
+    radio50Div.appendChild(radio50);
+    radio50Div.appendChild(radio50Label);
+
+    //Agregar al div principal
     divFormulario.appendChild(heading);
+    divFormulario.appendChild(radio10Div);
+    divFormulario.appendChild(radio25Div);
+    divFormulario.appendChild(radio50Div);
+
+    //Agregar al formulario
     formulario.appendChild(divFormulario);
     contenido.appendChild(formulario);
 
